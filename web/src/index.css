@@ -1,0 +1,4 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: #FBF8F1; }
+#root { min-height: 100vh; }

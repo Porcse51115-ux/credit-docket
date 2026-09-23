@@ -1,4 +1,4 @@
-// api.ts — the service/API layer the existing Credit Docket app calls.
+// api.ts — the service/API layer the Credit Docket dashboard calls.
 //
 // Endpoints:
 //   GET  /health                   -> liveness
@@ -6,24 +6,46 @@
 //   GET  /api/profile/:consumerId  -> normalized items for the dashboard
 //   POST /api/letters              -> generate dispute letters for selected items
 //
+// Store: in-memory by default; Postgres when DATABASE_URL is set.
+// CORS: browser origin allowed via WEB_ORIGIN (defaults to * for local dev).
 // Auth note: protect these with your app's session/JWT and role checks. Only
 // masked account numbers are ever returned; full numbers stay encrypted at rest.
 
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { MonitoringService } from "./service";
 import { FieldCrypto, LocalMasterKey } from "./crypto";
-import { InMemoryProfileStore } from "./storage";
+import { InMemoryProfileStore, ProfileStore } from "./storage";
+import { PostgresProfileStore } from "./postgresStore";
 import { SandboxProvider } from "./providers/SandboxProvider";
 import { generateLetters, LetterRequest, Sender } from "./letters/engine";
 import { ALL_BUREAUS, CreditProfile, Tradeline } from "./types";
 
 // --- wiring (swap SandboxProvider for AggregatorProvider in production) ---
 const crypto = new FieldCrypto(new LocalMasterKey());
-const store = new InMemoryProfileStore();
 const provider = new SandboxProvider();
-const service = new MonitoringService(provider, crypto, store);
+
+// Store is chosen at boot. Routes close over this variable, so main() can swap
+// in Postgres before the server starts listening.
+let store: ProfileStore = new InMemoryProfileStore();
+let service = new MonitoringService(provider, crypto, store);
+
+async function selectStore(): Promise<string> {
+  if (!process.env.DATABASE_URL) return "in-memory";
+  const pg = await import("pg");
+  const pool = new pg.default.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.PGSSL === "require" ? { rejectUnauthorized: false } : undefined,
+  });
+  const pgStore = new PostgresProfileStore(pool);
+  await pgStore.ensureSchema();
+  store = pgStore;
+  service = new MonitoringService(provider, crypto, store);
+  return "postgres";
+}
 
 const app = express();
+app.use(cors({ origin: process.env.WEB_ORIGIN || true }));
 app.use(express.json());
 
 // Strip server-only fields before sending to the client.
@@ -86,7 +108,9 @@ app.use((_req: Request, res: Response) => res.status(404).json({ error: "route_n
 
 const PORT = Number(process.env.PORT ?? 8787);
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => console.log(`monitoring API on :${PORT} (provider: ${provider.name})`));
+  selectStore()
+    .then((kind) => app.listen(PORT, () => console.log(`monitoring API on :${PORT} (provider: ${provider.name}, store: ${kind})`)))
+    .catch((e) => { console.error("store init failed:", e); process.exit(1); });
 }
 
 export { app };
