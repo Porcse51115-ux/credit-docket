@@ -9,6 +9,7 @@ import {
   BureauKey, CreditProfile, DisputeReasonCode, Inquiry, Tradeline,
 } from "../types";
 import { TEMPLATES } from "./templates";
+import { citeReasonEscalation } from "../shared/law";
 
 const BUREAUS: Record<BureauKey, { name: string; addr: [string, string] }> = {
   equifax: { name: "Equifax Information Services LLC", addr: ["P.O. Box 740256", "Atlanta, GA 30374"] },
@@ -26,14 +27,34 @@ export interface LetterRequest {
   reason: DisputeReasonCode;
   assertion?: string;             // the consumer's factual basis, in their words
   bureaus?: BureauKey[];          // override; defaults to bureaus reporting the item
+  round?: number;                 // 1 = initial; 3+ adds the escalation paragraph
 }
 
 export interface GeneratedLetter {
   itemId: string;
-  bureau: BureauKey;
+  recipient: string;              // "equifax" | furnisher/collector name
+  bureau?: BureauKey;             // set only for bureau-addressed letters
   reason: DisputeReasonCode;
   subject: string;
   text: string;
+}
+
+// Reasons whose letter is addressed to the furnisher/collector, not a bureau.
+const FURNISHER_ADDRESSED = new Set<DisputeReasonCode>(["furnisher_direct", "debt_validation"]);
+
+// Round 3+ escalation paragraph, citing the reason's escalation statutes. Returns
+// "" (nothing appended) for round < 3 or reasons with no escalation plan.
+function escalationBlock(reason: DisputeReasonCode, round?: number): string {
+  if (!round || round < 3) return "";
+  const esc = citeReasonEscalation(reason);
+  if (!esc) return "";
+  return (
+    `This is my formal notice. I have disputed this item previously and the matter remains ` +
+    `unresolved. If it is not corrected or deleted, I intend to file complaints with the ` +
+    `Consumer Financial Protection Bureau and the Federal Trade Commission, notify my state ` +
+    `Attorney General, and have my correspondence reviewed for potential claims, which allow ` +
+    `recovery of damages, costs, and attorney's fees under ${esc}.\n\n`
+  );
 }
 
 export interface LetterResult {
@@ -94,6 +115,12 @@ export function generateLetters(
 
     if (!tl) { skipped.push({ itemId: req.itemId, reason: "tradeline not found" }); continue; }
 
+    // Furnisher/collector-addressed letters (one letter, not per bureau).
+    if (FURNISHER_ADDRESSED.has(req.reason)) {
+      letters.push(renderFurnisher(sender, tl, req, tmpl.subject, tmpl.body));
+      continue;
+    }
+
     // §605 needs a date; refuse if we can't justify it.
     if (req.reason === "outdated" && !tl.dateOfFirstDelinquency) {
       skipped.push({ itemId: req.itemId, reason: "no first-delinquency date to support a §605 obsolescence claim" });
@@ -138,10 +165,11 @@ function renderTradeline(
     accountStatus: status ?? "[status]",
     dofd: tl.dateOfFirstDelinquency ?? "[date of first delinquency]",
     assertion: req.assertion?.trim() ?? "",
+    escalation: escalationBlock(req.reason, req.round),
   };
   const subject = fill(subjectTmpl, vars);
   return {
-    itemId: tl.id, bureau, reason: req.reason, subject,
+    itemId: tl.id, recipient: bureau, bureau, reason: req.reason, subject,
     text: fill(bodyTmpl, { ...vars, subject }),
   };
 }
@@ -154,10 +182,42 @@ function renderInquiry(sender: Sender, inq: Inquiry, req: LetterRequest): Genera
     inquiryDate: inq.inquiryDate,
     acctMasked: "",
     assertion: req.assertion?.trim() ?? "",
+    escalation: escalationBlock(req.reason, req.round),
   };
   const subject = fill(tmpl.subject, vars);
   return {
-    itemId: inq.id, bureau: inq.bureau, reason: req.reason, subject,
+    itemId: inq.id, recipient: inq.bureau, bureau: inq.bureau, reason: req.reason, subject,
     text: fill(tmpl.body, { ...vars, subject }),
+  };
+}
+
+// A letter addressed to the furnisher/collector rather than a bureau. The
+// account address is a placeholder the sender fills in.
+function renderFurnisher(
+  sender: Sender, tl: Tradeline, req: LetterRequest, subjectTmpl: string, bodyTmpl: string
+): GeneratedLetter {
+  const p0 = tl.presence[0];
+  const vars = {
+    senderName: sender.name || "[Your name]",
+    senderAddress: sender.address || "[Street]",
+    senderCityStateZip: sender.cityStateZip || "[City, State ZIP]",
+    idLine: idLine(sender),
+    date: fmtDate(),
+    bureauName: tl.creditorName,
+    bureauAddrLine1: "[Furnisher / collector mailing address]",
+    bureauAddrLine2: "",
+    creditor: tl.creditorName,
+    accountType: tl.accountType,
+    acctMasked: tl.accountNumberMasked.slice(-4),
+    reportedBalance: money(p0?.reportedBalance),
+    accountStatus: p0?.accountStatus ?? "[status]",
+    dofd: tl.dateOfFirstDelinquency ?? "[date of first delinquency]",
+    assertion: req.assertion?.trim() ?? "",
+    escalation: escalationBlock(req.reason, req.round),
+  };
+  const subject = fill(subjectTmpl, vars);
+  return {
+    itemId: tl.id, recipient: tl.creditorName, reason: req.reason, subject,
+    text: fill(bodyTmpl, { ...vars, subject }),
   };
 }

@@ -153,3 +153,37 @@ test("service returns a partial profile when one bureau stays down", async () =>
   assert.equal(tu.ok, false);
   assert.equal(tu.attempts, 2);
 });
+
+test("furnisher_direct renders one letter addressed to the furnisher, not a bureau", async () => {
+  const { profile } = await normalize("f1", [record("equifax")], crypto());
+  const item = profile.tradelines.find((t) => /midland/i.test(t.creditorName))!;
+  const res = generateLetters(profile, sender, [
+    { itemId: item.id, reason: "furnisher_direct", assertion: "This account is not mine; I never opened it." },
+  ]);
+  assert.equal(res.letters.length, 1);
+  assert.equal(res.letters[0].recipient, item.creditorName);
+  assert.equal(res.letters[0].bureau, undefined);
+  assert.match(res.letters[0].text, /15 U\.S\.C\. §1681s-2/);
+  assert.match(res.letters[0].text, /\[Furnisher \/ collector mailing address\]/);
+});
+
+test("debt_validation renders an FDCPA §809 letter with no basis required", async () => {
+  const { profile } = await normalize("f2", [record("equifax")], crypto());
+  const item = profile.tradelines.find((t) => /midland/i.test(t.creditorName))!;
+  const res = generateLetters(profile, sender, [{ itemId: item.id, reason: "debt_validation" }]);
+  assert.equal(res.letters.length, 1);
+  assert.match(res.letters[0].text, /15 U\.S\.C\. §1692g/);
+  assert.match(res.letters[0].text, /of the FDCPA/);
+});
+
+test("round 3 appends the escalation paragraph; round 1 does not", async () => {
+  const { profile } = await normalize("f3", [record("equifax")], crypto());
+  const item = profile.tradelines.find((t) => /midland/i.test(t.creditorName))!;
+  const base = { itemId: item.id, reason: "incorrect_balance" as const, assertion: "Balance is wrong; paid in full." };
+  const r1 = generateLetters(profile, sender, [{ ...base, round: 1 }]).letters[0].text;
+  const r3 = generateLetters(profile, sender, [{ ...base, round: 3 }]).letters[0].text;
+  assert.ok(!r1.includes("§1681n"), "round 1 has no escalation");
+  assert.match(r3, /§1681n/);
+  assert.match(r3, /§1681o/);
+  assert.match(r3, /Consumer Financial Protection Bureau/);
+});

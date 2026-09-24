@@ -28,7 +28,9 @@ export type DisputeReasonCode =
   | "duplicate"          // factual claim — requires asserted basis
   | "outdated"           // self-justifying from DOFD (§605)
   | "unverifiable"       // procedural — request verification under §611
-  | "incorrect_status";  // factual claim — requires asserted basis
+  | "incorrect_status"   // factual claim — requires asserted basis
+  | "furnisher_direct"   // direct dispute to the furnisher (§623)
+  | "debt_validation";   // FDCPA §809 validation request to a collector
 
 // Per-bureau view of a single tradeline (the same account can report
 // differently at each bureau — that mismatch is itself disputable).

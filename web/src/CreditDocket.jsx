@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import MonitoringPanel from "./MonitoringPanel.jsx";
 import ReportUpload from "./ReportUpload.jsx";
+import { citeInProse } from "./law/cite.js";
 
 /* ---------------------------------------------------------------------------
    CreditDocket — a grounded, FCRA-based dispute workbench.
@@ -112,39 +113,39 @@ function strategyBody(strategy, item, round) {
       return [
         `I am disputing the ${item.type.toLowerCase()} reported by ${who}${acct}.`,
         basisLine,
-        `Under the Fair Credit Reporting Act, 15 U.S.C. \u00a71681i (FCRA \u00a7611), you must conduct a reasonable reinvestigation of disputed information. If the furnisher cannot verify that this entry is both accurate and complete, you are required to delete it under \u00a7611(a)(5)(A)(i). Reporting information you cannot verify is not permitted.`,
+        `Under ${citeInProse("FCRA_611", "a_1_A")}, you must conduct a reasonable reinvestigation of disputed information. If the furnisher cannot verify that this entry is both accurate and complete, you are required to delete it under ${citeInProse("FCRA_611", "a_5_A_i")}. Reporting information you cannot verify is not permitted.`,
       ];
     case "reinvestigation":
       return [
         `I am requesting a reinvestigation of the ${item.type.toLowerCase()} reported by ${who}${acct}. I do not believe it is being reported accurately and completely, and I am asking you to verify it.`,
         basis ? `My concern: ${basis}` : "",
-        `Under FCRA \u00a7611 (15 U.S.C. \u00a71681i), please confirm the accuracy and completeness of every data field for this account \u2014 balance, payment history, status, and dates. If any field cannot be verified by the furnisher, that field, and where appropriate the entire tradeline, must be corrected or deleted.`,
+        `Under ${citeInProse("FCRA_611")}, please confirm the accuracy and completeness of every data field for this account \u2014 balance, payment history, status, and dates. If any field cannot be verified by the furnisher, that field, and where appropriate the entire tradeline, must be corrected or deleted.`,
       ].filter(Boolean);
     case "obsolescence": {
       const limit = item.type === "Bankruptcy" ? "ten (10)" : "seven (7)";
       return [
         `The ${item.type.toLowerCase()} reported by ${who}${acct} is obsolete and must be removed.`,
-        `Under FCRA \u00a7605 (15 U.S.C. \u00a71681c), most adverse items may not be reported after ${limit} years${item.type === "Bankruptcy" ? " from the date of filing" : " from the date of first delinquency that led to the action"}.${item.dofd ? ` The controlling date for this account is ${item.dofd}, which exceeds that period.` : ""}`,
+        `Under ${citeInProse("FCRA_605")}, most adverse items may not be reported after ${limit} years${item.type === "Bankruptcy" ? " from the date of filing" : " from the date of first delinquency that led to the action"}.${item.dofd ? ` The controlling date for this account is ${item.dofd}, which exceeds that period.` : ""}`,
         `Please delete this entry as it is past the statutory reporting period.`,
       ];
     }
     case "procedural":
       return [
         `On or about ${item.lastDisputeDate || "[date of prior dispute]"} I disputed the ${item.type.toLowerCase()} reported by ${who}${acct}.`,
-        `FCRA \u00a7611(a)(1)(A) (15 U.S.C. \u00a71681i) requires a reinvestigation to be completed within 30 days (45 in limited circumstances). That period has elapsed without a completed reinvestigation or a documented basis for the entry.`,
+        `${citeInProse("FCRA_611", "a_1_A")} requires a reinvestigation to be completed within 30 days (45 in limited circumstances). That period has elapsed without a completed reinvestigation or a documented basis for the entry.`,
         `Because the item has not been verified within the time the statute allows, I am requesting its prompt deletion and an updated copy of my file.`,
       ];
     case "mov":
       return [
         `Your agency returned the ${item.type.toLowerCase()} reported by ${who}${acct} as "verified." I am exercising my right to learn how that conclusion was reached.`,
-        `Under FCRA \u00a7611(a)(6)(B)(iii) and \u00a7611(a)(7) (15 U.S.C. \u00a71681i), please provide a description of the reinvestigation procedure, including the business name, address, and telephone number of the furnisher you contacted, and the nature of the records relied upon. Please respond within 15 days.`,
+        `Under ${citeInProse("FCRA_611", "a_6_B_iii")} and ${citeInProse("FCRA_611", "a_7")}, please provide a description of the reinvestigation procedure, including the business name, address, and telephone number of the furnisher you contacted, and the nature of the records relied upon. Please respond within 15 days.`,
         `If the verification consisted only of matching data already on file (e-OSCAR) without confirming the underlying records, it does not satisfy the "reasonable reinvestigation" standard, and the item should be deleted.`,
       ];
     case "furnisher":
       return [
         `I am submitting a direct dispute regarding the ${item.type.toLowerCase()} you report on my file${acct}.`,
         basisLine,
-        `As the furnisher, you have duties under FCRA \u00a7623 (15 U.S.C. \u00a71681s-2), including the duty to investigate a direct dispute and to refrain from reporting information you know or have reasonable cause to believe is inaccurate. Please investigate, correct or delete as appropriate, and notify each consumer reporting agency to which you have reported this account.`,
+        `As the furnisher, you have duties under ${citeInProse("FCRA_623")}, including the duty to investigate a direct dispute and to refrain from reporting information you know or have reasonable cause to believe is inaccurate. Please investigate, correct or delete as appropriate, and notify each consumer reporting agency to which you have reported this account.`,
       ];
     default:
       return [basisLine];
@@ -157,7 +158,7 @@ function roundEscalation(round) {
     `This is a follow-up to my earlier correspondence on this matter. I am keeping a dated record of each dispute and each response. Please treat this as a continuation, not a duplicate, and complete a reasonable reinvestigation rather than dismissing it.`,
   ];
   return [
-    `This is my formal notice. I have disputed this item previously and the matter remains unresolved. If it is not corrected or deleted, I intend to file complaints with the Consumer Financial Protection Bureau and the Federal Trade Commission, notify my state Attorney General, and have my correspondence reviewed for potential FCRA claims, which allow recovery of damages, costs, and attorney's fees under 15 U.S.C. \u00a71681n\u20131681o.`,
+    `This is my formal notice. I have disputed this item previously and the matter remains unresolved. If it is not corrected or deleted, I intend to file complaints with the Consumer Financial Protection Bureau and the Federal Trade Commission, notify my state Attorney General, and have my correspondence reviewed for potential FCRA claims, which allow recovery of damages, costs, and attorney's fees under ${citeInProse("FCRA_1681n")} and ${citeInProse("FCRA_1681o")}.`,
   ];
 }
 

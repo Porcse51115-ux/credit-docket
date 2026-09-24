@@ -1,16 +1,15 @@
 // letters/templates.ts — per-reason templates with {{field}} injection.
 //
-// Each template is plain text with {{tokens}}. The engine fills tokens from the
-// account/inquiry data plus the user's asserted basis. Citations are real:
-//   FCRA §611 (15 U.S.C. §1681i)  — reinvestigation, delete-if-unverifiable
-//   FCRA §605 (15 U.S.C. §1681c)  — obsolescence (7yr / 10yr bankruptcy)
-//   FCRA §623 (15 U.S.C. §1681s-2)— furnisher duties
+// Citations are NO LONGER hard-coded here. Every "§X of the Act (USC)" phrase is
+// rendered by citeInProse() from the statute registry (src/law/citations.json),
+// so there is one source of truth and the reason→section bindings live in
+// src/law/reason-map.json. See law.test.ts for the guards.
 //
 // `requiresAssertion: true` means the letter makes a factual claim the consumer
-// must stand behind. The engine refuses to render it without an asserted basis,
-// and flags frivolous risk — the same discipline as the Credit Docket UI.
+// must stand behind. The engine refuses to render it without an asserted basis.
 
 import { DisputeReasonCode } from "../types";
+import { citeInProse } from "../shared/law";
 
 export interface LetterTemplate {
   reason: DisputeReasonCode;
@@ -40,10 +39,21 @@ To Whom It May Concern:
 `;
 
 const COMMON_FOOTER = `
-Please complete your reinvestigation within the period FCRA §611 allows and send me
-a corrected copy of my file with written results.
+Please complete your reinvestigation within the period ${citeInProse("FCRA_611", "a_1_A")}
+allows and send me a corrected copy of my file with written results.
 
-Sincerely,
+{{escalation}}Sincerely,
+
+
+{{senderName}}
+
+Enclosures: copy of government-issued photo ID; proof of current address.`;
+
+// For letters addressed to a furnisher / collector rather than a bureau.
+const FURNISHER_FOOTER = `
+Please send your written response to the address above.
+
+{{escalation}}Sincerely,
 
 
 {{senderName}}
@@ -59,9 +69,9 @@ export const TEMPLATES: Record<DisputeReasonCode, LetterTemplate> = {
 I am disputing the {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}).
 This account is not mine. {{assertion}}
 
-Under FCRA §611 (15 U.S.C. §1681i), please conduct a reasonable reinvestigation. If the
+Under ${citeInProse("FCRA_611", "a_1_A")}, please conduct a reasonable reinvestigation. If the
 furnisher cannot verify that this account belongs to me and is accurate and complete, it
-must be deleted under §611(a)(5)(A)(i).
+must be deleted under ${citeInProse("FCRA_611", "a_5_A_i")}.
 ` + COMMON_FOOTER,
   },
 
@@ -73,9 +83,9 @@ must be deleted under §611(a)(5)(A)(i).
 The {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}) shows a balance
 of {{reportedBalance}}, which is inaccurate. {{assertion}}
 
-Reporting an inaccurate balance violates the accuracy requirement of FCRA §611
-(15 U.S.C. §1681i). Please verify the correct balance with the furnisher and correct or
-delete the entry if it cannot be substantiated.
+Reporting an inaccurate balance violates the accuracy requirement of ${citeInProse("FCRA_611")}.
+Please verify the correct balance with the furnisher and correct or delete the entry under
+${citeInProse("FCRA_611", "a_5_A_i")} if it cannot be substantiated.
 ` + COMMON_FOOTER,
   },
 
@@ -88,7 +98,7 @@ The {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}) is 
 an outstanding balance, but it has been satisfied. {{assertion}}
 
 Please update the status and balance to reflect that this account is paid/settled, or delete
-it if the current reporting cannot be verified, per FCRA §611 (15 U.S.C. §1681i).
+it under ${citeInProse("FCRA_611", "a_5_A_i")} if the current reporting cannot be verified.
 ` + COMMON_FOOTER,
   },
 
@@ -100,8 +110,8 @@ it if the current reporting cannot be verified, per FCRA §611 (15 U.S.C. §1681
 The {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}) reflects late
 payment(s) that are inaccurate. {{assertion}}
 
-Please reinvestigate the payment history under FCRA §611 (15 U.S.C. §1681i) and remove any
-late-payment notations the furnisher cannot verify as accurate and complete.
+Please reinvestigate the payment history under ${citeInProse("FCRA_611", "a_1_A")} and remove
+any late-payment notations the furnisher cannot verify as accurate and complete.
 ` + COMMON_FOOTER,
   },
 
@@ -113,8 +123,8 @@ late-payment notations the furnisher cannot verify as accurate and complete.
 The debt associated with {{creditor}} (account ending {{acctMasked}}) appears to be reported
 more than once on my file, inflating my obligations. {{assertion}}
 
-Duplicate reporting of a single debt is inaccurate and incomplete under FCRA §611
-(15 U.S.C. §1681i). Please reinvestigate and remove the duplicate tradeline.
+Duplicate reporting of a single debt is inaccurate and incomplete under ${citeInProse("FCRA_611")}.
+Please reinvestigate and remove the duplicate tradeline under ${citeInProse("FCRA_611", "a_5_A_i")}.
 ` + COMMON_FOOTER,
   },
 
@@ -126,8 +136,8 @@ Duplicate reporting of a single debt is inaccurate and incomplete under FCRA §6
 The {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}) is reported with
 the status "{{accountStatus}}", which is inaccurate. {{assertion}}
 
-Please reinvestigate under FCRA §611 (15 U.S.C. §1681i) and correct the status, or delete the
-entry if the reported status cannot be verified.
+Please reinvestigate under ${citeInProse("FCRA_611")} and correct the status, or delete the
+entry under ${citeInProse("FCRA_611", "a_5_A_i")} if the reported status cannot be verified.
 ` + COMMON_FOOTER,
   },
 
@@ -137,7 +147,7 @@ entry if the reported status cannot be verified.
     body: COMMON_HEADER +
 `
 The {{accountType}} reported by {{creditor}} (account ending {{acctMasked}}) is obsolete.
-Under FCRA §605 (15 U.S.C. §1681c), most adverse items may not be reported after seven years
+Under ${citeInProse("FCRA_605")}, most adverse items may not be reported after seven years
 (ten for bankruptcy). The controlling date for this account is {{dofd}}, which exceeds that
 period.
 
@@ -154,9 +164,9 @@ I am requesting a reinvestigation of the {{accountType}} reported by {{creditor}
 ending {{acctMasked}}). Please verify, with the furnisher, the accuracy and completeness of
 every field — balance, status, dates, and payment history.
 
-If any field cannot be verified, it must be corrected or deleted under FCRA §611
-(15 U.S.C. §1681i). If your agency returns this as "verified," please also provide the method
-of verification under §611(a)(7), including the furnisher's name, address, and phone number.
+If any field cannot be verified, it must be corrected or deleted under ${citeInProse("FCRA_611", "a_5_A_i")}.
+If your agency returns this as "verified," please also provide the method of verification
+under ${citeInProse("FCRA_611", "a_7")}, including the furnisher's name, address, and phone number.
 ` + COMMON_FOOTER,
   },
 
@@ -168,8 +178,39 @@ of verification under §611(a)(7), including the furnisher's name, address, and 
 A hard inquiry from {{subscriber}}, dated {{inquiryDate}}, appears on my file. I did not
 authorize this inquiry and there was no permissible purpose for it. {{assertion}}
 
-An inquiry made without a permissible purpose violates FCRA §604 (15 U.S.C. §1681b). Please
+An inquiry made without a permissible purpose violates ${citeInProse("FCRA_604")}. Please
 investigate and remove this inquiry from my credit file.
 ` + COMMON_FOOTER,
+  },
+
+  furnisher_direct: {
+    reason: "furnisher_direct", label: "Direct dispute to furnisher (§623)", requiresAssertion: true,
+    subject: "Direct dispute to furnisher — acct {{acctMasked}}",
+    body: COMMON_HEADER +
+`
+I am submitting a direct dispute regarding the {{accountType}} you report on my file
+(account ending {{acctMasked}}). {{assertion}}
+
+As the furnisher, you have duties under ${citeInProse("FCRA_623")}, including the duty to
+investigate a direct dispute and to refrain from reporting information you know or have
+reasonable cause to believe is inaccurate. Please investigate, correct or delete the entry as
+appropriate, and notify each consumer reporting agency to which you have reported this account.
+` + FURNISHER_FOOTER,
+  },
+
+  debt_validation: {
+    reason: "debt_validation", label: "Debt validation (FDCPA §809)", requiresAssertion: false,
+    subject: "Debt validation request — acct {{acctMasked}}",
+    body: COMMON_HEADER +
+`
+I dispute this debt and request validation under ${citeInProse("FDCPA_809")}. If you are a debt
+collector and this is within 30 days of your first communication with me, please provide
+verification of the debt — the amount owed, the name of the original creditor, and evidence
+that you are authorized to collect it — before continuing collection. {{assertion}}
+
+Until you provide validation, please cease collection activity and refrain from reporting this
+account to the consumer reporting agencies. Misrepresenting the status of an unvalidated debt
+may also violate ${citeInProse("FDCPA_807")}.
+` + FURNISHER_FOOTER,
   },
 };

@@ -30,8 +30,10 @@ const REASONS = [
   ["duplicate", "Duplicate tradeline"],
   ["incorrect_status", "Incorrect status"],
   ["unauthorized_inquiry", "Unauthorized inquiry"],
+  ["furnisher_direct", "Direct dispute to furnisher (§623)"],
+  ["debt_validation", "Debt validation (FDCPA §809)"],
 ];
-const FACTUAL = new Set(["not_mine", "incorrect_balance", "paid_in_full", "never_late", "duplicate", "incorrect_status", "unauthorized_inquiry"]);
+const FACTUAL = new Set(["not_mine", "incorrect_balance", "paid_in_full", "never_late", "duplicate", "incorrect_status", "unauthorized_inquiry", "furnisher_direct"]);
 
 function defaultReason(item) {
   if (item.type === "Hard inquiry") return "unauthorized_inquiry";
@@ -52,6 +54,7 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null); // { letters, skipped }
+  const [round, setRound] = useState(1);
 
   async function onPull() {
     setError(""); setResult(null); setLoading(true);
@@ -79,7 +82,7 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
         .filter((it) => sel[it.id]?.on)
         .map((it) => {
           const s = sel[it.id];
-          const d = { itemId: it.id, reason: s.reason };
+          const d = { itemId: it.id, reason: s.reason, round };
           if (s.assertion && s.assertion.trim()) d.assertion = s.assertion.trim();
           return d;
         });
@@ -124,7 +127,14 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
         <div style={{ ...box, padding: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontFamily: mono, fontSize: 11, color: C.mute, letterSpacing: ".06em", textTransform: "uppercase" }}>Review &amp; select ({selectedCount} selected)</div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <select value={round} onChange={(e) => setRound(Number(e.target.value))}
+                title="Dispute round (3+ adds escalation language)"
+                style={{ ...input, width: "auto", padding: "6px 8px" }}>
+                <option value={1}>Round 1</option>
+                <option value={2}>Round 2</option>
+                <option value={3}>Round 3+</option>
+              </select>
               {onImport && (
                 <button onClick={() => onImport(items)}
                   style={{ background: C.sheet, color: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
@@ -190,7 +200,7 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
           {result.letters.map((l, i) => (
             <div key={i} style={{ marginTop: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12.5, color: C.ink2, fontWeight: 600 }}>{l.bureau} · {l.reason}</span>
+                <span style={{ fontSize: 12.5, color: C.ink2, fontWeight: 600 }}>{l.recipient ?? l.bureau} · {l.reason}</span>
                 <button onClick={() => navigator.clipboard?.writeText(l.text)}
                   style={{ background: C.sheet, border: `1px solid ${C.line}`, borderRadius: 6, padding: "3px 8px", fontSize: 12, color: C.ink2, cursor: "pointer" }}>Copy</button>
               </div>

@@ -20,6 +20,9 @@ full") without a basis the user asserts.
   Vercel / GitHub Pages. Monitoring tab + `localStorage` persistence.
 - **Two ingestion paths:** browser-side report upload/parse (no backend needed)
   and the automated bureau pull (sandbox data until you credential an aggregator).
+- **11 dispute reasons**, including furnisher-direct (§623) and FDCPA §809 debt
+  validation (both addressed to the furnisher/collector, not a bureau). The engine
+  is round-aware: round 3+ appends the escalation paragraph (§1681n/§1681o).
 - **License:** proprietary (`LICENSE`). Fill in your legal name/entity.
 
 ## Read this before you write a line of production code
@@ -120,7 +123,30 @@ Items, Tracking, and the Dashboard, and can drive the local Letters generator.
 
 Front-end files (`web/src/`): `CreditDocket.jsx` (app, `localStorage` persistence),
 `MonitoringPanel.jsx`, `ReportUpload.jsx`, `reportParser.js`, `creditApi.js`,
-`mapProfile.js`, `main.jsx`.
+`mapProfile.js`, `law/cite.js`, `main.jsx`.
+
+## Legal citation registry (`src/shared/law/`)
+
+Statute citations are data with one authoritative source, not prose scattered
+through templates:
+
+- `src/shared/law/citations.ts` — **authoritative** statute catalog (FCRA/FDCPA
+  sections, subsections, USC numbers, Cornell URLs, `act`).
+- `src/shared/law/reason-map.ts` — which section(s)/subsection(s) each dispute
+  reason cites (`primary` / `primary_subsections` / `supporting` / `escalation`).
+- `src/shared/law/citation-prose.ts` — `citeInProse()` / `citeShort()`; templates
+  call these instead of hard-coding citations.
+- `src/shared/law/build-mirror.ts` — generates `generated/law.json` (a versioned
+  bundle) from the TS source. Run `npm run build:law`; it's also hooked into
+  `pretest`. The **JS frontend imports this bundle** (`web/src/law/cite.js`), so
+  client and server render from the same registry.
+
+**Editing:** change the TS source, then `npm run build:law` to regenerate
+`generated/law.json`, and bump `BUNDLE_VERSION` in `build-mirror.ts` when a
+citation changes (Docket Strategist checks that version at startup). Tests
+(`test/law.test.ts`, `web/src/law/cite.test.js`) assert every reason's
+sections/subsections exist, that FDCPA sections read "of the FDCPA", and that the
+committed `law.json` matches the TS source.
 
 > Not legal advice. Have counsel review your permissible-purpose basis, data
 > security program, and (if you sell repair services) CROA compliance before launch.
