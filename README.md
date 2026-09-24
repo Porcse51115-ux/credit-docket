@@ -150,6 +150,3 @@ committed `law.json` matches the TS source.
 
 > Not legal advice. Have counsel review your permissible-purpose basis, data
 > security program, and (if you sell repair services) CROA compliance before launch.
-
-> Not legal advice. Have counsel review your permissible-purpose basis, data
-> security program, and (if you sell repair services) CROA compliance before launch.
