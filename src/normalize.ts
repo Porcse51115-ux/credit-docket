@@ -9,6 +9,8 @@
 //    duplicate tradeline (a real, disputable inaccuracy)
 //  - encrypt full account numbers; expose only a masked form
 //  - detect negative signals, including §605 (past reporting window) candidates
+//  - assign STABLE, deterministic IDs (hash of stable properties) so the same
+//    account across pulls resolves to the same ID — case tracking depends on it
 //
 // Field paths here match SandboxProvider's payload. If your real provider's JSON
 // differs, this file is the ONLY place you change.
@@ -18,7 +20,7 @@ import {
   PublicRecord, PullDiagnostic, Tradeline,
 } from "./types";
 import { FieldCrypto, maskAccount } from "./crypto";
-import { randomUUID } from "crypto";
+import { createHash } from "crypto";
 
 export interface RawAccount {
   creditor: string; account_number: string; type: string;
@@ -67,6 +69,44 @@ function mergeKey(a: RawAccount): string {
   const creditor = a.creditor.toLowerCase().replace(/[^a-z0-9]/g, "");
   return `${creditor}:${last4(a.account_number)}`;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stable IDs
+//
+// Every ID is a hash of properties that identify the "same thing" across pulls:
+//   - Tradeline: normalized creditor + last 4 of account (same as mergeKey)
+//   - Inquiry:   normalized subscriber + inquiry date + bureau
+//   - Public record: kind + filed date + reference + bureau
+//
+// Deterministic: pulling the same data next month produces the same IDs, which
+// is what lets the case store track "item X, dispute round 2, previous
+// outcome Y" across time. Do NOT switch back to randomUUID — see stability
+// tests in test/normalize-id-stability.test.ts.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function shortHash(input: string): string {
+  return createHash("sha256").update(input).digest("hex").slice(0, 16);
+}
+
+export function tradelineId(a: RawAccount): string {
+  const creditor = a.creditor.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const digits = last4(a.account_number);
+  return `tl_${shortHash(`${creditor}:${digits}`)}`;
+}
+
+export function inquiryId(q: RawInquiry, bureau: BureauKey): string {
+  const sub = q.subscriber.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return `iq_${shortHash(`${sub}:${q.date}:${bureau}`)}`;
+}
+
+export function publicRecordId(p: RawPublicRecord, bureau: BureauKey): string {
+  const kind = p.kind ?? "other";
+  const filed = p.filed ?? "";
+  const ref = p.reference ?? "";
+  return `pr_${shortHash(`${kind}:${filed}:${ref}:${bureau}`)}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function detectSignals(a: RawAccount): NegativeSignal[] {
   const s = new Set<NegativeSignal>();
@@ -127,7 +167,7 @@ export async function normalize(
         existing.signals = [...new Set([...existing.signals, ...signals])];
       } else {
         byKey.set(k, {
-          id: randomUUID(),
+          id: tradelineId(a),
           creditorName: a.creditor,
           accountNumberMasked: maskAccount(a.account_number),
           accountNumberEnc: crypto.encryptField(key, a.account_number),
@@ -143,7 +183,7 @@ export async function normalize(
 
     for (const q of r.payload.inquiries) {
       inquiries.push({
-        id: randomUUID(),
+        id: inquiryId(q, bureau),
         subscriberName: q.subscriber,
         inquiryDate: q.date,
         type: q.kind,
@@ -153,7 +193,7 @@ export async function normalize(
 
     for (const p of r.payload.public_records ?? []) {
       publicRecords.push({
-        id: randomUUID(),
+        id: publicRecordId(p, bureau),
         kind: p.kind ?? "other",
         filedDate: p.filed,
         status: p.status,
