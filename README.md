@@ -6,10 +6,41 @@ dispute UI. Letter generation reuses the same grounded-basis discipline as the
 front-end app: it will not manufacture a factual claim ("not mine," "paid in
 full") without a basis the user asserts.
 
-```
-  permissioned provider ──▶ normalize ──▶ encrypt + store ──▶ /profile API ──▶ Credit Docket dashboard
-                                                                    │
-                                                                    └──▶ /letters API ──▶ grounded dispute letters
+```mermaid
+flowchart LR
+    subgraph Sources["Data Sources"]
+        A[Permissioned<br/>Aggregator API]
+        B[Browser Report<br/>Upload / Parse]
+    end
+
+    A -->|HTTPS + OAuth| N[Normalize<br/>Cross-Bureau Dedup]
+    B -->|Client-side only| W
+
+    N --> E[Encrypt<br/>AES-256-GCM]
+    E --> S[(Postgres<br/>JSONB Store)]
+
+    S --> API1["/profile API"]
+    S --> API2["/letters API"]
+
+    API1 --> W[Credit Docket<br/>Dashboard]
+    API2 --> L[Grounded<br/>Dispute Letters]
+
+    W --> L
+
+    subgraph Registry["Legal Registry"]
+        R["src/shared/law/<br/>citations · reason-map · prose"]
+    end
+
+    R -.->|law.json| L
+    R -.->|TS imports| API2
+
+    style A fill:#4285F4,stroke:#333,color:#fff
+    style B fill:#34A853,stroke:#333,color:#fff
+    style E fill:#EA4335,stroke:#333,color:#fff
+    style S fill:#FBBC04,stroke:#333,color:#000
+    style W fill:#673AB7,stroke:#333,color:#fff
+    style L fill:#673AB7,stroke:#333,color:#fff
+    style R fill:#00897B,stroke:#333,color:#fff
 ```
 
 ## Status
@@ -147,9 +178,6 @@ citation changes (Docket Strategist checks that version at startup). Tests
 (`test/law.test.ts`, `web/src/law/cite.test.js`) assert every reason's
 sections/subsections exist, that FDCPA sections read "of the FDCPA", and that the
 committed `law.json` matches the TS source.
-
-> Not legal advice. Have counsel review your permissible-purpose basis, data
-> security program, and (if you sell repair services) CROA compliance before launch.
 
 > Not legal advice. Have counsel review your permissible-purpose basis, data
 > security program, and (if you sell repair services) CROA compliance before launch.
