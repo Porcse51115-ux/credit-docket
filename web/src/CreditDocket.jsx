@@ -119,7 +119,7 @@ function strategyBody(strategy, item, round) {
       return [
         `I am requesting a reinvestigation of the ${item.type.toLowerCase()} reported by ${who}${acct}. I do not believe it is being reported accurately and completely, and I am asking you to verify it.`,
         basis ? `My concern: ${basis}` : "",
-        `Under ${citeInProse("FCRA_611")}, please confirm the accuracy and completeness of every data field for this account \u2014 balance, payment history, status, and dates. If any field cannot be verified by the furnisher, that field, and where appropriate the entire tradeline, must be corrected or deleted.`,
+        `Under ${citeInProse("FCRA_611")}, please confirm the accuracy and completeness of every data field for this account — balance, payment history, status, and dates. If any field cannot be verified by the furnisher, that field, and where appropriate the entire tradeline, must be corrected or deleted.`,
       ].filter(Boolean);
     case "obsolescence": {
       const limit = item.type === "Bankruptcy" ? "ten (10)" : "seven (7)";
@@ -180,7 +180,7 @@ function buildDisputeLetter({ p, item, bureauKey, round, strategy }) {
   lines.push("");
   lines.push(...to);
   lines.push("");
-  lines.push(`Re: Dispute of inaccurate information \u2014 Round ${round}${item.accountNumber ? ` \u2014 acct ${item.accountNumber}` : ""}`);
+  lines.push(`Re: Dispute of inaccurate information — Round ${round}${item.accountNumber ? ` — acct ${item.accountNumber}` : ""}`);
   lines.push("");
   lines.push("To Whom It May Concern:");
   lines.push("");
@@ -384,9 +384,9 @@ export default function CreditDocket() {
   /* --- speed ranking --- */
   function priority(it) {
     if (it.type === "Hard inquiry") return { rank: 1, why: "Unauthorized inquiries are the quickest legitimate removals." };
-    if (obsoleteEligible(it)) return { rank: 2, why: "Past the §605 reporting window \u2014 must be deleted." };
+    if (obsoleteEligible(it)) return { rank: 2, why: "Past the §605 reporting window — must be deleted." };
     if (it.type === "Collection") return { rank: 3, why: "Often thinly documented; demand verification." };
-    if (/duplicate/i.test(it.basis || "")) return { rank: 1, why: "True duplicate tradeline \u2014 fast to correct." };
+    if (/duplicate/i.test(it.basis || "")) return { rank: 1, why: "True duplicate tradeline — fast to correct." };
     return { rank: 5, why: "Standard reinvestigation track." };
   }
   const ranked = [...items].map((it) => ({ it, ...priority(it) })).sort((a, b) => a.rank - b.rank);
@@ -457,7 +457,7 @@ export default function CreditDocket() {
       <div className="space-y-4">
         <p style={{ fontSize: 13, color: C.ink2 }}>
           This is the identity block printed at the top of every letter. Use your legal name and current mailing address.
-          Only the last four of your SSN are collected \u2014 that's all a dispute letter should ever include.
+          Only the last four of your SSN are collected — that's all a dispute letter should ever include.
         </p>
         <Field label="Full legal name"><input style={inputStyle} value={profile.name} onChange={set("name")} placeholder="Jordan A. Rivera" /></Field>
         <Field label="Street address"><input style={inputStyle} value={profile.address} onChange={set("address")} placeholder="123 Maple Street" /></Field>
@@ -476,7 +476,7 @@ export default function CreditDocket() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <p style={{ fontSize: 13, color: C.ink2, maxWidth: 460 }}>
-            Add each negative entry. The <b>"What's wrong / your basis"</b> field is the engine of every honest dispute \u2014
+            Add each negative entry. The <b>"What's wrong / your basis"</b> field is the engine of every honest dispute —
             name the actual inaccuracy, the missing proof, or why it can't be verified.
           </p>
           <button onClick={addItem} className="flex items-center gap-1 rounded-lg px-3 py-2 shrink-0"
@@ -614,7 +614,7 @@ export default function CreditDocket() {
           {item && !item.basis && strategy !== "obsolescence" && strategy !== "procedural" && strategy !== "mov" && (
             <div className="mt-3 flex gap-2 rounded-lg p-2.5" style={{ background: C.amberSoft }}>
               <AlertTriangle size={15} style={{ color: C.amber, flexShrink: 0, marginTop: 1 }} />
-              <span style={{ fontSize: 12.5, color: C.ink2 }}>This item has no stated basis. A dispute with no genuine basis can be dismissed as frivolous under §611(a)(3) \u2014 add the specific inaccuracy under Items first.</span>
+              <span style={{ fontSize: 12.5, color: C.ink2 }}>This item has no stated basis. A dispute with no genuine basis can be dismissed as frivolous under §611(a)(3) — add the specific inaccuracy under Items first.</span>
             </div>
           )}
           <button onClick={gen} className="mt-3 flex items-center justify-center gap-2 w-full rounded-lg py-2.5"
@@ -678,12 +678,12 @@ export default function CreditDocket() {
         {mode === "goodwill" ? (
           <div className="flex gap-2 rounded-lg p-3" style={{ background: C.accentSoft }}>
             <ShieldCheck size={16} style={{ color: C.accent, flexShrink: 0, marginTop: 1 }} />
-            <span style={{ fontSize: 12.5, color: C.ink2 }}>Best for an accurate, isolated late payment on an account you've otherwise paid on time. It's a favor, not a right \u2014 keep it gracious.</span>
+            <span style={{ fontSize: 12.5, color: C.ink2 }}>Best for an accurate, isolated late payment on an account you've otherwise paid on time. It's a favor, not a right — keep it gracious.</span>
           </div>
         ) : (
           <div className="flex gap-2 rounded-lg p-3" style={{ background: C.amberSoft }}>
             <AlertTriangle size={16} style={{ color: C.amber, flexShrink: 0, marginTop: 1 }} />
-            <span style={{ fontSize: 12.5, color: C.ink2 }}>Reality check: bureaus discourage pay-for-delete and furnishers don't have to honor it. <b>Get the agreement in writing before paying.</b> Paying can also restart the clock on time-barred debt in some states \u2014 confirm yours first.</span>
+            <span style={{ fontSize: 12.5, color: C.ink2 }}>Reality check: bureaus discourage pay-for-delete and furnishers don't have to honor it. <b>Get the agreement in writing before paying.</b> Paying can also restart the clock on time-barred debt in some states — confirm yours first.</span>
           </div>
         )}
 
@@ -771,7 +771,7 @@ export default function CreditDocket() {
           <div className="flex gap-2">
             <Scale size={16} style={{ color: C.accent, flexShrink: 0, marginTop: 2 }} />
             <p style={{ fontSize: 13, color: C.ink2 }}>
-              The fastest results that hold up come from removing things that are actually <b>inaccurate, unverifiable, or expired</b> \u2014
+              The fastest results that hold up come from removing things that are actually <b>inaccurate, unverifiable, or expired</b> —
               not from out-disputing the verification system. Work the order below.
             </p>
           </div>
@@ -873,19 +873,19 @@ export default function CreditDocket() {
       </nav>
 
       <main style={{ maxWidth: 760, margin: "0 auto", padding: "20px 16px 60px" }}>
-        {tab === "dashboard" && <Dashboard />}
-        {tab === "profile" && <Profile />}
+        {tab === "dashboard" && Dashboard()}
+        {tab === "profile" && Profile()}
         {tab === "monitoring" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <ReportUpload onImport={importBureauItems} />
             <MonitoringPanel sender={profile} onImport={importBureauItems} />
           </div>
         )}
-        {tab === "items" && <Items />}
-        {tab === "letter" && <LetterStudio />}
-        {tab === "negotiation" && <Negotiation />}
-        {tab === "tracking" && <Tracking />}
-        {tab === "strategy" && <Strategy />}
+        {tab === "items" && Items()}
+        {tab === "letter" && LetterStudio()}
+        {tab === "negotiation" && Negotiation()}
+        {tab === "tracking" && Tracking()}
+        {tab === "strategy" && Strategy()}
       </main>
 
       {/* guide modal */}
@@ -899,8 +899,8 @@ export default function CreditDocket() {
               <button onClick={() => setShowGuide(false)} style={{ color: C.mute }}><X size={20} /></button>
             </div>
             <div className="space-y-3 mt-3" style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.6 }}>
-              <p><b>Dispute what's actually wrong.</b> Your power under FCRA §611 is real: bureaus must delete information they can't verify as accurate and complete. Every letter here is built around a basis you state \u2014 keep it truthful.</p>
-              <p><b>Don't try to out-spam verification.</b> Filing disputes with no genuine basis, or rewording the same baseless claim each round to dodge filters, can be dismissed as frivolous (§611(a)(3)) and is the behavior regulators target. It also rarely works \u2014 bureaus run automated verification.</p>
+              <p><b>Dispute what's actually wrong.</b> Your power under FCRA §611 is real: bureaus must delete information they can't verify as accurate and complete. Every letter here is built around a basis you state — keep it truthful.</p>
+              <p><b>Don't try to out-spam verification.</b> Filing disputes with no genuine basis, or rewording the same baseless claim each round to dodge filters, can be dismissed as frivolous (§611(a)(3)) and is the behavior regulators target. It also rarely works — bureaus run automated verification.</p>
               <p><b>Always mail certified, return receipt.</b> The dated proof is what makes a §611(a)(1) "missed the 30 days" argument stick later.</p>
               <p><b>Keep records.</b> Save every letter and response in Tracking. If a bureau or furnisher breaks the rules, that paper trail is what an attorney or a CFPB complaint runs on.</p>
               <p><b>If you ever sell this as a service,</b> the Credit Repair Organizations Act applies: no charging before work is delivered, no misrepresentations, written contracts, and a 3-day cancellation right. Worth a real lawyer's review before you take a dollar.</p>

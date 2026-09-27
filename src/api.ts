@@ -48,6 +48,17 @@ const app = express();
 app.use(cors({ origin: process.env.WEB_ORIGIN || true }));
 app.use(express.json());
 
+// Request logger — logs method, path, status, and duration for every request.
+// Uses console.log so it flows through the same stream as the startup banner.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const ms = Date.now() - start;
+    console.log(`${req.method} ${req.path} -> ${res.statusCode} (${ms}ms)`);
+  });
+  next();
+});
+
 // Strip server-only fields before sending to the client.
 function publicProfile(p: CreditProfile) {
   return {
@@ -65,7 +76,15 @@ const asyncRoute =
   (req: Request, res: Response, next: NextFunction) =>
     fn(req, res).catch(next);
 
-app.get("/health", (_req: Request, res: Response) => res.json({ ok: true, provider: provider.name }));
+app.get("/health", async (_req: Request, res: Response) => {
+  const dbOk = await store.healthCheck();
+  res.status(dbOk ? 200 : 503).json({
+    ok: dbOk,
+    provider: provider.name,
+    store: store.constructor.name === "PostgresProfileStore" ? "postgres" : "in-memory",
+    dbOk,
+  });
+});
 
 app.post("/api/pull", asyncRoute(async (req: Request, res: Response) => {
   const { consumerId, consentToken, bureaus } = req.body ?? {};
@@ -107,7 +126,24 @@ app.post("/api/letters", asyncRoute(async (req: Request, res: Response) => {
 app.use((_req: Request, res: Response) => res.status(404).json({ error: "route_not_found" }));
 
 const PORT = Number(process.env.PORT ?? 8787);
+
+/**
+ * Startup env warnings for optional vars that silently fall back to permissive
+ * defaults. Required vars are validated at import time by their consumers
+ * (FIELD_MASTER_KEY is checked in LocalMasterKey; PORT has a sane default).
+ */
+function warnAboutMissingEnv(): void {
+  if (!process.env.DATABASE_URL) {
+    console.warn("WARN: DATABASE_URL not set — falling back to in-memory store.");
+    console.warn("      Data will be lost on restart. Set DATABASE_URL in .env for durable storage.");
+  }
+  if (!process.env.WEB_ORIGIN) {
+    console.warn("NOTE: WEB_ORIGIN not set — CORS is open to *. Set WEB_ORIGIN in .env for production.");
+  }
+}
+
 if (process.env.NODE_ENV !== "test") {
+  warnAboutMissingEnv();
   selectStore()
     .then((kind) => app.listen(PORT, () => console.log(`monitoring API on :${PORT} (provider: ${provider.name}, store: ${kind})`)))
     .catch((e) => { console.error("store init failed:", e); process.exit(1); });

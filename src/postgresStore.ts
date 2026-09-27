@@ -26,6 +26,16 @@ export class PostgresProfileStore implements ProfileStore {
     await this.pool.query(SCHEMA);
   }
 
+  /** Verifies the Postgres pool is reachable by issuing a trivial query. */
+  async healthCheck(): Promise<boolean> {
+    try {
+      await this.pool.query("SELECT 1");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async put(p: StoredProfile): Promise<void> {
     await this.pool.query(
       `INSERT INTO credit_profiles (consumer_id, wrapped_data_key, profile, updated_at)

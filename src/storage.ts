@@ -16,6 +16,8 @@ export interface ProfileStore {
   put(p: StoredProfile): Promise<void>;
   get(consumerId: string): Promise<StoredProfile | null>;
   list(): Promise<string[]>;
+  /** Returns true if the store is reachable and responsive. */
+  healthCheck(): Promise<boolean>;
 }
 
 export class InMemoryProfileStore implements ProfileStore {
@@ -23,4 +25,5 @@ export class InMemoryProfileStore implements ProfileStore {
   async put(p: StoredProfile) { this.m.set(p.profile.consumerId, p); }
   async get(consumerId: string) { return this.m.get(consumerId) ?? null; }
   async list() { return [...this.m.keys()]; }
+  async healthCheck() { return true; }
 }

@@ -8,7 +8,7 @@
 //   {tab === "monitoring" && <MonitoringPanel sender={profile} />}
 // (add ["monitoring","Monitoring",Activity] to the TABS array)
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { pullReport, generateLetters } from "./creditApi.js";
 import { mapProfileToItems } from "./mapProfile.js";
 
@@ -44,17 +44,39 @@ function defaultReason(item) {
 const box = { background: C.sheet, border: `1px solid ${C.line}`, borderRadius: 12 };
 const input = { width: "100%", background: C.sheet, border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px 10px", fontSize: 13, color: C.ink, outline: "none" };
 
+const MONITORING_STORAGE_KEY = "credit-docket-monitoring-v1";
+
+function loadMonitoringState() {
+  try {
+    const raw = localStorage.getItem(MONITORING_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveMonitoringState(state) {
+  try { localStorage.setItem(MONITORING_STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
+}
+
 export default function MonitoringPanel({ sender = {}, defaultConsumerId = "consumer_001", onImport }) {
-  const [consumerId, setConsumerId] = useState(defaultConsumerId);
-  const [consentToken, setConsentToken] = useState("");
-  const [items, setItems] = useState([]);
-  const [sel, setSel] = useState({}); // itemId -> { on, reason, assertion }
-  const [status, setStatus] = useState(null); // { partial, diagnostics }
+  // Persistent state — survives tab navigation and page refresh.
+  const saved = loadMonitoringState();
+  const [consumerId, setConsumerId] = useState(saved?.consumerId ?? defaultConsumerId);
+  const [consentToken, setConsentToken] = useState(saved?.consentToken ?? "");
+  const [items, setItems] = useState(saved?.items ?? []);
+  const [sel, setSel] = useState(saved?.sel ?? {}); // itemId -> { on, reason, assertion }
+  const [status, setStatus] = useState(saved?.status ?? null); // { partial, diagnostics }
+  const [round, setRound] = useState(saved?.round ?? 1);
+
+  // Ephemeral state — reset on every mount.
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null); // { letters, skipped }
-  const [round, setRound] = useState(1);
+
+  // Save persistent state whenever any part of it changes.
+  useEffect(() => {
+    saveMonitoringState({ consumerId, consentToken, items, sel, status, round });
+  }, [consumerId, consentToken, items, sel, status, round]);
 
   async function onPull() {
     setError(""); setResult(null); setLoading(true);
@@ -97,6 +119,15 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
   }
 
   const selectedCount = items.filter((it) => sel[it.id]?.on).length;
+  const profileComplete = !!(sender.name?.trim() && sender.address?.trim() && sender.cityStateZip?.trim());
+  const generateDisabled = generating || selectedCount === 0 || !profileComplete;
+  const generateReason = !profileComplete
+    ? "Fill in your name, address, and city/state/zip on the Profile tab first"
+    : selectedCount === 0
+    ? "Select at least one item"
+    : generating
+    ? "Generating..."
+    : "";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -127,6 +158,9 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
         <div style={{ ...box, padding: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontFamily: mono, fontSize: 11, color: C.mute, letterSpacing: ".06em", textTransform: "uppercase" }}>Review &amp; select ({selectedCount} selected)</div>
+            {!profileComplete && (
+              <div style={{ fontSize: 12, color: C.clay, fontWeight: 500 }}>Fill in your Profile before generating letters</div>
+            )}
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <select value={round} onChange={(e) => setRound(Number(e.target.value))}
                 title="Dispute round (3+ adds escalation language)"
@@ -141,8 +175,9 @@ export default function MonitoringPanel({ sender = {}, defaultConsumerId = "cons
                   Add to workspace
                 </button>
               )}
-              <button onClick={onGenerate} disabled={generating || selectedCount === 0}
-                style={{ background: C.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: generating || selectedCount === 0 ? 0.5 : 1 }}>
+              <button onClick={onGenerate} disabled={generateDisabled}
+                title={generateReason}
+                style={{ background: C.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: generateDisabled ? "not-allowed" : "pointer", opacity: generateDisabled ? 0.5 : 1 }}>
                 {generating ? "Generating…" : "Generate letters"}
               </button>
             </div>
