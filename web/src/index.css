@@ -1,4 +1,70 @@
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-body { background: #FBF8F1; }
-#root { min-height: 100vh; }
+@import url('https://rsms.me/inter/inter.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens — Credit Docket palette translated to HSL for shadcn/ui.
+ *
+ * The identity stays the same: cream paper, deep ink text, forest-green accent,
+ * warm clay for warnings/errors, muted amber for cautions.
+ * Tailwind classes like `bg-primary` and `text-muted-foreground` resolve here.
+ */
+
+@layer base {
+  :root {
+    --background: 42 40% 96%;               /* #FBF8F1 — cream paper */
+    --foreground: 220 14% 11%;              /* #16191F — deep ink */
+
+    --card: 40 60% 99%;                     /* #FFFEFB — sheet */
+    --card-foreground: 220 14% 11%;
+
+    --primary: 168 76% 24%;                 /* #0F6E5C — forest green accent */
+    --primary-foreground: 40 60% 99%;
+
+    --secondary: 40 30% 93%;                /* #F4F1E9 — surface */
+    --secondary-foreground: 218 11% 26%;    /* #3A4049 — ink2 */
+
+    --muted: 40 25% 90%;
+    --muted-foreground: 42 8% 47%;          /* #7B7363 — mute */
+
+    --accent: 166 40% 92%;                  /* #E4F0EB — accent soft */
+    --accent-foreground: 168 76% 24%;
+
+    --destructive: 8 60% 42%;               /* #A8392E — clay */
+    --destructive-foreground: 40 60% 99%;
+
+    --warning: 40 78% 34%;                  /* #9A6B12 — amber */
+    --warning-foreground: 40 60% 99%;
+
+    --border: 40 25% 84%;                   /* #E2DCCE — line */
+    --input: 40 25% 84%;
+    --ring: 168 76% 24%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";  /* Inter's stylistic alternates */
+  }
+  #root {
+    min-height: 100vh;
+  }
+}
+
+/* Utility for the letterhead-style outputs — mono for identity blocks. */
+.font-mono-tabular {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
