@@ -111,16 +111,28 @@ app.get("/api/profile/:consumerId", asyncRoute(async (req: Request, res: Respons
 }));
 
 app.post("/api/letters", asyncRoute(async (req: Request, res: Response) => {
-  const { consumerId, sender, disputes } = req.body as {
-    consumerId: string; sender: Sender; disputes: LetterRequest[];
+  // `profile` is optional — when present (e.g. from Docket Strategist which
+  // parsed its own report), use it directly. When absent, fall back to the
+  // stored profile from a prior /api/pull (CD dashboard flow).
+  const { consumerId, sender, disputes, profile } = req.body as {
+    consumerId: string;
+    sender: Sender;
+    disputes: LetterRequest[];
+    profile?: CreditProfile;
   };
-  const stored = await store.get(consumerId);
-  if (!stored) return res.status(404).json({ error: "profile_not_found" });
+  let effectiveProfile: CreditProfile;
+  if (profile) {
+    effectiveProfile = profile;
+  } else {
+    const stored = await store.get(consumerId);
+    if (!stored) return res.status(404).json({ error: "profile_not_found" });
+    effectiveProfile = stored.profile;
+  }
   if (!Array.isArray(disputes) || disputes.length === 0) {
     return res.status(400).json({ error: "no disputes selected" });
   }
   // `skipped` tells the UI which items need a basis before they can be disputed.
-  res.json(generateLetters(stored.profile, sender ?? ({} as Sender), disputes));
+  res.json(generateLetters(effectiveProfile, sender ?? ({} as Sender), disputes));
 }));
 
 app.use((_req: Request, res: Response) => res.status(404).json({ error: "route_not_found" }));
