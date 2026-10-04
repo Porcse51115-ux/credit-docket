@@ -17,6 +17,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["'IBM Plex Mono'", "ui-monospace", "monospace"],
+        display: ["Fraunces", "Georgia", "serif"],
       },
       colors: {
         // Credit Docket palette — the cream/beige/green identity, preserved as CSS vars.

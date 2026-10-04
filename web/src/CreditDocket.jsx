@@ -7,6 +7,7 @@ import {
 import MonitoringPanel from "./MonitoringPanel.jsx";
 import ReportUpload from "./ReportUpload.jsx";
 import { citeInProse } from "./law/cite.js";
+import { cn } from "@/lib/utils";
 
 /* ---------------------------------------------------------------------------
    CreditDocket — a grounded, FCRA-based dispute workbench.
@@ -15,20 +16,24 @@ import { citeInProse } from "./law/cite.js";
    Custom colors are inline (artifact Tailwind has no arbitrary values).
 --------------------------------------------------------------------------- */
 
+// Pass 1 of CD.2 conversion — C now sources colors from design tokens.
+// Same visual identity, HSL CSS vars behind the scenes so Tailwind utility
+// classes (bg-primary, text-destructive, etc.) resolve to the same values
+// as inline style={{}} blocks still referencing C.
 const C = {
-  ink: "#16191F",
-  ink2: "#3A4049",
-  paper: "#FBF8F1",
-  sheet: "#FFFEFB",
-  surface: "#F4F1E9",
-  line: "#E2DCCE",
-  accent: "#0F6E5C",
-  accentSoft: "#E4F0EB",
-  clay: "#A8392E",
-  claySoft: "#F4E2DE",
-  amber: "#9A6B12",
-  amberSoft: "#F3E9D2",
-  mute: "#7B7363",
+  ink: "hsl(var(--foreground))",
+  ink2: "hsl(var(--secondary-foreground))",
+  paper: "hsl(var(--background))",
+  sheet: "hsl(var(--card))",
+  surface: "hsl(var(--secondary))",
+  line: "hsl(var(--border))",
+  accent: "hsl(var(--primary))",
+  accentSoft: "hsl(var(--accent))",
+  clay: "hsl(var(--destructive))",
+  claySoft: "hsl(var(--destructive) / 0.12)",
+  amber: "hsl(var(--warning))",
+  amberSoft: "hsl(var(--warning) / 0.15)",
+  mute: "hsl(var(--muted-foreground))",
 };
 const display = "'Fraunces', Georgia, serif";
 const body = "'Inter', system-ui, sans-serif";
@@ -356,11 +361,6 @@ export default function CreditDocket() {
     setTab("items");
   };
 
-  const fonts = (
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,560;9..144,640&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  );
-
   /* --- item helpers --- */
   const addItem = () => setItems((xs) => [...xs, {
     id: uid(), creditor: "", accountNumber: "", type: "Collection",
@@ -670,7 +670,7 @@ export default function CreditDocket() {
             <button key={k} onClick={() => { setMode(k); setText(""); }}
               className="flex items-center gap-1.5 rounded-lg px-3 py-2"
               style={{ background: mode === k ? C.ink : C.sheet, color: mode === k ? C.paper : C.ink2, border: `1px solid ${mode === k ? C.ink : C.line}`, fontSize: 13, fontWeight: 600 }}>
-              <Icon size={14} /> {label}
+              <Icon size={12} /> {label}
             </button>
           ))}
         </div>
@@ -823,7 +823,7 @@ export default function CreditDocket() {
     ["monitoring", "Monitoring", Activity],
     ["items", "Items", ListChecks],
     ["letter", "Letters", Send],
-    ["negotiation", "Goodwill / PFD", Handshake],
+    ["negotiation", "Goodwill", Handshake],
     ["tracking", "Tracking", FileText],
     ["strategy", "Fast track", Gauge],
   ];
@@ -831,48 +831,56 @@ export default function CreditDocket() {
   if (!loaded) {
     return (
       <div style={{ minHeight: "100vh", background: C.paper, display: "grid", placeItems: "center", fontFamily: body, color: C.mute }}>
-        {fonts}Loading your docket…
+        Loading your docket…
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: C.paper, fontFamily: body, color: C.ink }}>
-      {fonts}
-      {/* header */}
-      <header style={{ background: C.ink, color: C.paper, padding: "18px 18px 16px" }}>
-        <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <div className="flex items-center justify-between">
-            <div>
-              <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: ".18em", color: "#8b9aa0" }}>FCRA DISPUTE WORKBENCH</div>
-              <h1 style={{ fontFamily: display, fontSize: 27, lineHeight: 1.05, marginTop: 2 }}>Credit Docket</h1>
-            </div>
-            <button onClick={() => setShowGuide(true)} className="flex items-center gap-1 rounded-lg px-3 py-2"
-              style={{ background: "rgba(255,255,255,0.08)", color: C.paper, fontSize: 12.5 }}>
-              <Info size={14} /> Use it right
-            </button>
+    <div className="flex min-h-screen bg-background text-foreground">
+      {/* sidebar */}
+      <aside className="w-60 bg-foreground text-background flex flex-col sticky top-0 h-screen shrink-0">
+        {/* brand */}
+        <div className="px-5 pt-5 pb-4 border-b border-white/10">
+          <div className="font-mono-tabular text-[10px] tracking-[0.18em] uppercase text-white/50 mb-1">
+            FCRA DISPUTE WORKBENCH
           </div>
+          <h1 className="font-display text-2xl leading-tight text-background m-0">
+            Credit Docket
+          </h1>
         </div>
-      </header>
 
-      {/* tab strip */}
-      <nav style={{ background: C.surface, borderBottom: `1px solid ${C.line}`, position: "sticky", top: 0, zIndex: 5 }}>
-        <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", gap: 4, overflowX: "auto", padding: "8px 12px" }}>
+        {/* nav */}
+        <nav className="flex-1 overflow-y-auto px-2 py-3 [scrollbar-width:thin]">
           {TABS.map(([k, label, Icon]) => (
-            <button key={k} onClick={() => setTab(k)}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 shrink-0"
-              style={{
-                background: tab === k ? C.ink : "transparent",
-                color: tab === k ? C.paper : C.ink2,
-                fontSize: 13, fontWeight: tab === k ? 600 : 500, whiteSpace: "nowrap",
-              }}>
-              <Icon size={14} /> {label}
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={cn(
+                "w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors mb-0.5 text-left",
+                tab === k
+                  ? "bg-background text-foreground font-semibold"
+                  : "bg-transparent text-white/70 font-medium hover:bg-white/5 hover:text-white"
+              )}
+            >
+              <Icon size={16} /> {label}
             </button>
           ))}
-        </div>
-      </nav>
+        </nav>
 
-      <main style={{ maxWidth: 760, margin: "0 auto", padding: "20px 16px 60px" }}>
+        {/* "Use it right" CTA */}
+        <div className="p-3 border-t border-white/10">
+          <button
+            onClick={() => setShowGuide(true)}
+            className="w-full flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2.5 bg-primary text-primary-foreground text-sm font-semibold shadow-sm hover:shadow transition-all hover:brightness-95"
+          >
+            <Info size={14} /> Use it right
+          </button>
+        </div>
+      </aside>
+
+      {/* main content */}
+      <main className="flex-1 max-w-[1400px] mx-auto px-10 pt-8 pb-16">
         {tab === "dashboard" && Dashboard()}
         {tab === "profile" && Profile()}
         {tab === "monitoring" && (
