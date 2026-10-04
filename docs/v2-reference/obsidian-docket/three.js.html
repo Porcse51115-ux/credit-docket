@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_THREEJS_START:ANIMATION_2 class="fixed inset-0 w-full h-full bg-transparent" -->
+<div class="fixed inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_2" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_2');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Three.js interactive 3D Credit Shield & Floating Holographic Data Rings
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 0, 9);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
+
+const dirLight1 = new THREE.DirectionalLight(0x34d399, 2.5); // Mint Emerald
+dirLight1.position.set(5, 8, 5);
+scene.add(dirLight1);
+
+const dirLight2 = new THREE.DirectionalLight(0x60a5fa, 2.0); // Electric Blue
+dirLight2.position.set(-6, -4, 4);
+scene.add(dirLight2);
+
+const pointLight = new THREE.PointLight(0xf59e0b, 2.0, 15); // Amber Gold
+pointLight.position.set(0, 0, 3);
+scene.add(pointLight);
+
+// Group
+const mainGroup = new THREE.Group();
+scene.add(mainGroup);
+
+// 1. Central Metallic & Glass Emblem - Credit Shield geometry
+const shieldShape = new THREE.Shape();
+shieldShape.moveTo(0, 1.8);
+shieldShape.quadraticCurveTo(1.5, 1.6, 1.8, 0.5);
+shieldShape.quadraticCurveTo(1.7, -1.0, 0, -2.1);
+shieldShape.quadraticCurveTo(-1.7, -1.0, -1.8, 0.5);
+shieldShape.quadraticCurveTo(-1.5, 1.6, 0, 1.8);
+
+const extrudeSettings = {
+  depth: 0.35,
+  bevelEnabled: true,
+  bevelSegments: 5,
+  steps: 2,
+  bevelSize: 0.1,
+  bevelThickness: 0.08
+};
+
+const shieldGeo = new THREE.ExtrudeGeometry(shieldShape, extrudeSettings);
+shieldGeo.center();
+
+const shieldMat = new THREE.MeshPhongMaterial({
+  color: 0x0f2b26,
+  emissive: 0x064e3b,
+  specular: 0x34d399,
+  shininess: 90,
+  wireframe: false,
+  transparent: true,
+  opacity: 0.88
+});
+
+const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+mainGroup.add(shieldMesh);
+
+// Shield Wireframe / Neon Edge Accent
+const wireMat = new THREE.MeshBasicMaterial({
+  color: 0x34d399,
+  wireframe: true,
+  transparent: true,
+  opacity: 0.35
+});
+const wireMesh = new THREE.Mesh(shieldGeo, wireMat);
+wireMesh.scale.set(1.02, 1.02, 1.02);
+mainGroup.add(wireMesh);
+
+// 2. Inner Credit Lock / Star / Docket Monogram
+const innerCoreGeo = new THREE.OctahedronGeometry(0.7, 0);
+const innerCoreMat = new THREE.MeshPhongMaterial({
+  color: 0xf59e0b,
+  emissive: 0xb45309,
+  specular: 0xfef08a,
+  shininess: 120
+});
+const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
+innerCore.position.z = 0.25;
+mainGroup.add(innerCore);
+
+// 3. Floating Orbital Rings (representing 3 Bureaus: Equifax, Experian, TransUnion)
+const ringGeo1 = new THREE.TorusGeometry(2.4, 0.025, 16, 100);
+const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.7 });
+const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+ring1.rotation.x = Math.PI / 3;
+ring1.rotation.y = Math.PI / 6;
+mainGroup.add(ring1);
+
+const ringGeo2 = new THREE.TorusGeometry(2.8, 0.02, 16, 100);
+const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.6 });
+const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+ring2.rotation.x = -Math.PI / 4;
+ring2.rotation.y = Math.PI / 4;
+mainGroup.add(ring2);
+
+const ringGeo3 = new THREE.TorusGeometry(3.2, 0.02, 16, 100);
+const ringMat3 = new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.65 });
+const ring3 = new THREE.Mesh(ringGeo3, ringMat3);
+ring3.rotation.x = Math.PI / 2.2;
+mainGroup.add(ring3);
+
+// 4. Floating Score Node Orbs orbiting along the rings
+const orbGeo = new THREE.SphereGeometry(0.12, 16, 16);
+const orb1 = new THREE.Mesh(orbGeo, new THREE.MeshBasicMaterial({ color: 0x6ee7b7 }));
+const orb2 = new THREE.Mesh(orbGeo, new THREE.MeshBasicMaterial({ color: 0x93c5fd }));
+const orb3 = new THREE.Mesh(orbGeo, new THREE.MeshBasicMaterial({ color: 0xfde047 }));
+mainGroup.add(orb1);
+mainGroup.add(orb2);
+mainGroup.add(orb3);
+
+// 5. Cinematic particle field (ambient financial data dust)
+const particleCount = 220;
+const particleGeo = new THREE.BufferGeometry();
+const particlePos = new Float32Array(particleCount * 3);
+
+for (let i = 0; i < particleCount * 3; i += 3) {
+  particlePos[i] = (Math.random() - 0.5) * 16;
+  particlePos[i + 1] = (Math.random() - 0.5) * 12;
+  particlePos[i + 2] = (Math.random() - 0.5) * 8;
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+
+const particleMat = new THREE.PointsMaterial({
+  size: 0.055,
+  color: 0x34d399,
+  transparent: true,
+  opacity: 0.55
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+// Mouse interaction
+let mouseX = 0;
+let mouseY = 0;
+let targetX = 0;
+let targetY = 0;
+
+function onMouseMove(event) {
+  const rect = container.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  mouseX = (x / width) * 2 - 1;
+  mouseY = -(y / height) * 2 + 1;
+}
+window.addEventListener('mousemove', onMouseMove);
+
+function onResize() {
+  const w = container.clientWidth || window.innerWidth;
+  const h = container.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+
+// Animation Loop
+let clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  targetX += (mouseX * 0.45 - targetX) * 0.05;
+  targetY += (mouseY * 0.35 - targetY) * 0.05;
+
+  mainGroup.rotation.y = targetX + Math.sin(elapsedTime * 0.4) * 0.15;
+  mainGroup.rotation.x = -targetY + Math.cos(elapsedTime * 0.3) * 0.12;
+
+  // Gentle float
+  mainGroup.position.y = Math.sin(elapsedTime * 0.8) * 0.15;
+
+  // Inner core spin & pulse
+  innerCore.rotation.y += 0.015;
+  innerCore.rotation.x += 0.01;
+  const pulse = 1 + Math.sin(elapsedTime * 2) * 0.06;
+  innerCore.scale.set(pulse, pulse, pulse);
+
+  // Rotate orbital rings
+  ring1.rotation.z = elapsedTime * 0.3;
+  ring2.rotation.z = -elapsedTime * 0.25;
+  ring3.rotation.y = elapsedTime * 0.2;
+
+  // Orbits
+  const r1 = 2.4;
+  orb1.position.set(Math.cos(elapsedTime * 0.9) * r1, Math.sin(elapsedTime * 0.9) * (r1 * 0.5), Math.sin(elapsedTime * 0.9) * (r1 * 0.86));
+
+  const r2 = 2.8;
+  orb2.position.set(Math.cos(-elapsedTime * 0.7) * (r2 * 0.7), Math.sin(-elapsedTime * 0.7) * r2, Math.cos(-elapsedTime * 0.7) * (r2 * 0.7));
+
+  const r3 = 3.2;
+  orb3.position.set(Math.cos(elapsedTime * 0.5) * r3, 0, Math.sin(elapsedTime * 0.5) * r3);
+
+  // Particles gentle spin
+  particles.rotation.y = elapsedTime * 0.02;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_2 -->
+</body>
+</html>

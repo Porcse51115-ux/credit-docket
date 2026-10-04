@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-tint":"#4edea3","error-container":"#93000a","on-secondary-container":"#5b3800","on-primary":"#003824","surface-container-low":"#191b23","primary-fixed-dim":"#4edea3","secondary-container":"#ee9800","on-surface-variant":"#bbcabf","surface-container":"#1d1f27","on-tertiary-fixed-variant":"#005137","primary":"#4edea3","secondary-fixed-dim":"#ffb95f","on-error-container":"#ffdad6","surface":"#10131a","on-tertiary-container":"#00422c","surface-dim":"#10131a","on-primary-fixed":"#002113","on-primary-container":"#00422b","on-secondary-fixed":"#2a1700","inverse-surface":"#e1e2ec","on-secondary":"#472a00","on-background":"#e1e2ec","surface-container-high":"#272a32","surface-container-lowest":"#0b0e15","inverse-on-surface":"#2d3038","inverse-primary":"#006c49","on-tertiary":"#003825","on-surface":"#e1e2ec","surface-variant":"#32353d","secondary-fixed":"#ffddb8","tertiary-fixed-dim":"#45dfa4","primary-container":"#10b981","tertiary":"#45dfa4","error":"#ffb4ab","surface-container-highest":"#32353d","on-primary-fixed-variant":"#005236","surface-bright":"#363941","tertiary-container":"#00b982","outline-variant":"#3c4a42","background":"#10131a","on-secondary-fixed-variant":"#653e00","tertiary-fixed":"#68fcbf","secondary":"#ffb95f","primary-fixed":"#6ffbbe","outline":"#86948a","on-error":"#690005","on-tertiary-fixed":"#002114"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","space-md":"1rem","gutter":"1.25rem","gutter-mobile":"0.75rem","space-xl":"2.5rem","space-xs":"0.25rem","margin-mobile":"1rem","space-sm":"0.5rem","margin":"2rem"},fontFamily:{"headline-md":["Playfair Display"],"display-lg-mobile":["Playfair Display"],"metric-lg":["Space Grotesk"],"metric-xl":["Space Grotesk"],"body-md":["Space Grotesk"],"headline-lg":["Playfair Display"],"label-sm":["Space Grotesk"],"headline-sm":["Playfair Display"],"body-lg":["Space Grotesk"],"label-lg":["Space Grotesk"],"display-lg":["Playfair Display"]},fontSize:{"headline-md":["24px",{lineHeight:"32px",fontWeight:"500"}],"display-lg-mobile":["34px",{lineHeight:"42px",letterSpacing:"-0.015em",fontWeight:"600"}],"metric-lg":["32px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"metric-xl":["44px",{lineHeight:"48px",letterSpacing:"-0.03em",fontWeight:"700"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-sm":["10px",{lineHeight:"14px",letterSpacing:"0.1em",fontWeight:"600"}],"headline-sm":["20px",{lineHeight:"28px",fontWeight:"500"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-lg":["12px",{lineHeight:"16px",letterSpacing:"0.08em",fontWeight:"600"}],"display-lg":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"600"}]}}}}</script></head><body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-2xl shadow-[0_1px_12px_rgba(0,0,0,0.6)]"><div class="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center shadow-inner"><span class="material-symbols-outlined text-primary text-[22px]">gavel</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">Credit Docket</span></div><span class="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-secondary text-label-sm font-label-sm uppercase tracking-wider">FCRA Dispute Workbench</span></div><nav class="hidden xl:flex items-center gap-space-xs p-1 bg-surface-container-lowest/60 rounded-xl" data-active-classes="bg-surface-container-high text-on-surface rounded-lg"><a class="px-space-md py-space-xs text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="overview" href="#">Overview</a><a class="px-space-md py-space-xs text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="bureau-sync" href="#">Bureau Sync</a><a class="px-space-md py-space-xs text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="dispute-engine" href="#">Dispute Engine</a><a aria-current="page" class="px-space-md py-space-xs font-body-md transition-colors bg-surface-container-high text-on-surface rounded-lg" data-path="letters-and-tracking" href="#">Letters &amp; Tracking</a><a class="px-space-md py-space-xs text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="pricing" href="#">Pricing</a></nav><div class="flex items-center gap-space-md"><a class="hidden sm:inline-flex items-center justify-center px-space-lg py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg uppercase tracking-wider transition-all duration-300 shadow-[0_0_24px_rgba(16,185,129,0.25)] hover:shadow-[0_0_32px_rgba(16,185,129,0.45)] hover:bg-tertiary-container" data-path="dispute-engine" href="#">Start Dispute</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface min-h-[calc(100vh-20rem)]"><div class="flex flex-col w-full">
+<!-- Radial Ambient Lighting Glows (Contained) -->
+<div class="relative w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin pt-space-md pb-space-xl">
+<div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+<div class="absolute top-36 right-1/4 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+<!-- Page Header & Visual Identity -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md mb-space-xl pb-space-lg">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm tracking-widest uppercase">
+            Chain of Custody Docket • 15 U.S.C. § 1681
+          </span>
+<span class="text-label-sm font-label-sm text-outline">•</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">USPS e-Return Receipts Active</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">
+          Letters &amp; Certified Mail Tracking Docket
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+          Cryptographic tracking of physical certified dispute packets, electronic return receipts, and statutory countdown timers enforced under federal consumer credit mandates.
+        </p>
+</div>
+<!-- Quick Action Toolbar -->
+<div class="flex flex-wrap items-center gap-space-sm shrink-0">
+<button class="flex items-center gap-2 px-space-md py-2.5 rounded-lg bg-surface-container-high text-on-surface font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-variant transition-all duration-200" id="btn-sync-usps">
+<span class="material-symbols-outlined text-[18px] text-primary" id="sync-icon">sync</span>
+<span>Sync USPS API</span>
+</button>
+<button class="flex items-center gap-2 px-space-lg py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg uppercase tracking-wider transition-all duration-300 shadow-md hover:bg-tertiary-container">
+<span class="material-symbols-outlined text-[18px]">post_add</span>
+<span>Prepare New Certified Packet</span>
+</button>
+</div>
+</div>
+<!-- Metric Summary Cards (4 Columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-space-xl">
+<!-- Metric 1 -->
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-md">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Packets Dispatched</span>
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">mark_email_read</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="font-metric-xl text-metric-xl text-on-surface tracking-tight">38</div>
+<p class="font-body-md text-body-md text-on-surface-variant">100% USPS Certified with Form 3811 Green Card Return Receipt</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-1.5 text-label-sm font-label-sm text-primary">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span>Chain of Custody Cryptographically Hashed</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-md">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Under 30-Day Clock</span>
+<div class="w-8 h-8 rounded-lg bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">hourglass_top</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="font-metric-xl text-metric-xl text-secondary tracking-tight">7 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">In Flight</span></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Average 16.4 statutory calendar days remaining before mandatory purge</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-1.5 text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span>1 Packet Approaching Day 28 Threshold</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-md">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Delivered &amp; Signed</span>
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-fixed">
+<span class="material-symbols-outlined text-[20px]">inventory</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="font-metric-xl text-metric-xl text-on-surface tracking-tight">29 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">Signed</span></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Proof of legal service stamped by bureau compliance intake desk</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">receipt_long</span>
+<span>PDF Signatures Archived in Vault</span>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-md">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Statutory Deletions</span>
+<div class="w-8 h-8 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="font-metric-xl text-metric-xl text-primary tracking-tight">18 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">Removed</span></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Items expunged automatically after bureaus failed 30-day verification</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-1.5 text-label-sm font-label-sm text-primary">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+47 Pt Average FICO Recovery</span>
+</div>
+</div>
+</div>
+<!-- Section 1: Interactive Active Statutory Countdown Clock & Timeline -->
+<div class="rounded-xl bg-surface-container-low p-space-lg md:p-space-xl shadow-md mb-space-xl relative overflow-hidden">
+<!-- Decorative background accent bar -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Header Row of the Countdown Section -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-lg">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">Active Clock Priority Focus</span>
+<span class="text-label-sm font-label-sm text-outline">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">USPS Tracking #9407 1118 9956 0231 8489 12</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">
+            TransUnion Consumer Relations — Round 2 Strict Accuracy Rebuttal
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Statutory deadline established under <span class="text-on-surface font-semibold">15 U.S.C. § 1681i(a)(1)</span>. TransUnion must finish reinvestigation or expunge all 3 challenged tradelines.
+          </p>
+</div>
+<!-- Live Clock Display Plate -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-space-md p-space-md rounded-xl bg-surface-container-high shrink-0 shadow-inner">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-outline tracking-wider">Statutory Clock Remaining</span>
+<div class="font-metric-lg text-metric-lg text-secondary tracking-tight" id="statutory-timer">
+              12d 08h 44m 12s
+            </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hard Legal Expunction: Nov 15, 2025 at 23:59 EST</span>
+</div>
+<div class="hidden sm:block w-px h-12 bg-surface-variant"></div>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase text-outline tracking-wider">Enforcement Mode</span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm uppercase tracking-wide">
+              Automated Purge Mandate
+            </span>
+</div>
+</div>
+</div>
+<!-- Timeline Milestone Bar Visualizer -->
+<div class="py-space-lg">
+<div class="flex justify-between text-label-sm font-label-sm uppercase text-outline pb-2 px-1">
+<span>Day 0: Filing &amp; Mail</span>
+<span>Day 4: Agent Service</span>
+<span>Day 10: Furnisher Routing</span>
+<span class="text-secondary font-semibold">Current State (Day 18)</span>
+<span class="text-on-surface">Day 30: Mandated Deletion</span>
+</div>
+<!-- Track Container -->
+<div class="relative w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<!-- Filled Progress (Day 18 / 30 = 60%) -->
+<div class="absolute left-0 top-0 bottom-0 w-[60%] bg-gradient-to-r from-primary via-primary to-secondary rounded-full"></div>
+</div>
+<!-- Milestone Markers -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-space-sm pt-space-md">
+<!-- Step 1 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Oct 12</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface font-medium">Packet Generated</span>
+<span class="text-label-sm font-label-sm text-outline">18-page certified brief &amp; exhibits</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Oct 13</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface font-medium">Dispatched USPS</span>
+<span class="text-label-sm font-label-sm text-outline">USPS Facility Philadelphia, PA</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Oct 16</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface font-medium">Delivered &amp; Signed</span>
+<span class="text-label-sm font-label-sm text-outline">Agent 'M. CHENEY' signed Form 3811</span>
+</div>
+<!-- Step 4 (Current) -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Oct 21</span>
+</div>
+<span class="font-body-md text-body-md text-secondary font-semibold">15-Day Furnisher Notice</span>
+<span class="text-label-sm font-label-sm text-outline">Section 623(b) notice served to furnisher</span>
+</div>
+<!-- Step 5 (Target) -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+<span>Nov 15</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface font-medium">Day 30 Purge Deadline</span>
+<span class="text-label-sm font-label-sm text-outline">Automated § 1681i(a)(5)(A) Deletion Demand</span>
+</div>
+</div>
+</div>
+<!-- Chain of Custody Verification Bar & Quick Actions -->
+<div class="mt-space-md pt-space-md flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md bg-surface-container p-space-md rounded-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[24px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-outline tracking-wider">Cryptographic Chain-of-Custody Hash</span>
+<span class="font-metric-lg text-body-md text-on-surface font-mono">SHA256: 8a4f91b72e04d3e891cc774208a09cf3181829e160a2...</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm w-full md:w-auto">
+<button class="flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container-high text-on-surface font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary">download</span>
+<span>Electronic Receipt (PS Form 3811)</span>
+</button>
+<button class="flex items-center gap-2 px-space-md py-2 rounded-lg bg-secondary-container/20 text-secondary font-label-lg text-label-lg uppercase tracking-wider hover:bg-secondary-container/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+<span>Pre-Stage Day 31 Statutory Demand</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section 2: Dispatched Packets Table & Chain of Custody -->
+<div class="flex flex-col gap-space-md mb-space-xl">
+<!-- Section Title & Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-0.5">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">
+            Dispatched Packets &amp; Proof of Service Ledger
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Full federal audit record with postal carrier timestamps and digital receiver sign-offs.
+          </p>
+</div>
+<!-- Table Filters -->
+<div class="flex items-center gap-space-xs bg-surface-container-low p-1 rounded-xl">
+<button class="tab-filter active px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider">All Packets (38)</button>
+<button class="tab-filter px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase tracking-wider transition-colors">Under Clock (7)</button>
+<button class="tab-filter px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase tracking-wider transition-colors">Expunged (18)</button>
+</div>
+</div>
+<!-- The Table View -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-md">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-high text-outline font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-md px-space-lg">Bureau / Furnisher Entity</th>
+<th class="py-space-md px-space-md">Packet Type &amp; Claim</th>
+<th class="py-space-md px-space-md">USPS Certified Tracking</th>
+<th class="py-space-md px-space-md">Timeline &amp; Served</th>
+<th class="py-space-md px-space-md">Return Receipt</th>
+<th class="py-space-md px-space-lg text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-body-md font-body-md">
+<!-- Row 1: TransUnion (Active Clock) -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-metric-lg font-bold text-primary">
+                      TU
+                    </div>
+<div class="flex flex-col">
+<span class="font-body-md font-medium text-on-surface">TransUnion Legal Relations</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">P.O. Box 2000, Chester, PA 19016</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-medium">Round 2 Strict Accuracy Rebuttal</span>
+<span class="text-label-sm font-label-sm text-secondary">3 Accounts • 15 U.S.C. § 1681i</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-label-sm font-label-sm text-on-surface font-semibold">9407 1118 9956 0231 8489 12</span>
+<span class="inline-flex items-center gap-1.5 w-max px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                      12 Days Remaining
+                    </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface">Mailed: Oct 13, 2025</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">Delivered: Oct 16, 2025</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="text-on-surface text-label-sm font-label-sm font-semibold">Digital Hash Stamped</span>
+<span class="text-outline text-label-sm font-label-sm font-mono">Agent: M. CHENEY</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="View Letter Brief PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Track Live Route on USPS">
+<span class="material-symbols-outlined text-[20px]">route</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-primary hover:text-primary transition-colors" title="View PS Form 3811 Receipt">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Experian (Resolved / Expunged) -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-metric-lg font-bold text-secondary">
+                      EX
+                    </div>
+<div class="flex flex-col">
+<span class="font-body-md font-medium text-on-surface">Experian Compliance Care</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">P.O. Box 4500, Allen, TX 75013</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-medium">Metro 2 Date-of-First-Delinquency Audit</span>
+<span class="text-label-sm font-label-sm text-primary">15 U.S.C. § 1681eb(b)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-label-sm font-label-sm text-on-surface font-semibold">9407 1118 9956 0199 4432 01</span>
+<span class="inline-flex items-center gap-1.5 w-max px-2 py-0.5 rounded-full bg-primary-container/20 text-primary text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[12px]">done_all</span>
+                      Statutory Deletion Won
+                    </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface">Mailed: Sep 18, 2025</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">Delivered: Sep 21, 2025</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="text-on-surface text-label-sm font-label-sm font-semibold">PS Form 3811 Vaulted</span>
+<span class="text-outline text-label-sm font-label-sm font-mono">Agent: J. VALDEZ</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="View Letter Brief PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Track Live Route on USPS">
+<span class="material-symbols-outlined text-[20px]">route</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-primary hover:text-primary transition-colors" title="Deletion Certificate">
+<span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Midland Credit Management (Furnisher Direct) -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-metric-lg font-bold text-on-surface-variant">
+                      MC
+                    </div>
+<div class="flex flex-col">
+<span class="font-body-md font-medium text-on-surface">Midland Credit Management, Inc.</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">350 Camino De La Reina, San Diego, CA</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-medium">Direct Furnisher Validation Mandate</span>
+<span class="text-label-sm font-label-sm text-outline">15 U.S.C. § 1681s-2 &amp; FDCPA § 809</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-label-sm font-label-sm text-on-surface font-semibold">9407 1118 9956 0441 9081 55</span>
+<span class="inline-flex items-center gap-1.5 w-max px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      19 Days Remaining
+                    </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface">Mailed: Oct 20, 2025</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">Delivered: Oct 24, 2025</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="text-on-surface text-label-sm font-label-sm font-semibold">Signed Return Receipt</span>
+<span class="text-outline text-label-sm font-label-sm font-mono">Agent: S. KOWALSKI</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="View Letter Brief PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Track Live Route on USPS">
+<span class="material-symbols-outlined text-[20px]">route</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-primary hover:text-primary transition-colors" title="View PS Form 3811 Receipt">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Equifax (Delivered & Clock Active) -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-metric-lg font-bold text-primary">
+                      EQ
+                    </div>
+<div class="flex flex-col">
+<span class="font-body-md font-medium text-on-surface">Equifax Information Services LLC</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">P.O. Box 740256, Atlanta, GA 30374</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-medium">Method of Verification (MOV) Demand</span>
+<span class="text-label-sm font-label-sm text-secondary">15 U.S.C. § 1681i(a)(6)(B)(iii)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-1">
+<span class="font-mono text-label-sm font-label-sm text-on-surface font-semibold">9407 1118 9956 0992 1109 84</span>
+<span class="inline-flex items-center gap-1.5 w-max px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                      04 Days Remaining
+                    </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="text-on-surface">Mailed: Oct 05, 2025</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">Delivered: Oct 08, 2025</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="text-on-surface text-label-sm font-label-sm font-semibold">PS Form 3811 Archived</span>
+<span class="text-outline text-label-sm font-label-sm font-mono">Agent: R. GIBSON</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="View Letter Brief PDF">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Track Live Route on USPS">
+<span class="material-symbols-outlined text-[20px]">route</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container-high text-primary hover:text-primary transition-colors" title="View PS Form 3811 Receipt">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Ledger Footer Stats -->
+<div class="py-space-md px-space-lg bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-sm text-label-sm font-label-sm text-on-surface-variant">
+<span>Showing 4 of 38 verified postal dockets</span>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1 rounded bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors">Previous</button>
+<span class="text-on-surface">Page 1 of 10</span>
+<button class="px-space-md py-1 rounded bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors">Next</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Pre-Formatted Legal Letter Library & Generation Center -->
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">library_books</span>
+<span class="font-label-sm text-label-sm uppercase text-outline tracking-wider">Statutory Precedent Library</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">
+            Legal Dispute Letter Engine
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Pre-configured certified letters citing federal statutes, FTC consent decrees, and Metro 2 industry formatting standard violations.
+          </p>
+</div>
+<button class="flex items-center gap-2 px-space-md py-2.5 rounded-lg bg-surface-container-high text-primary font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-variant transition-colors self-start md:self-auto">
+<span class="material-symbols-outlined text-[18px]">build</span>
+<span>Open Custom Brief Builder</span>
+</button>
+</div>
+<!-- 3 Template Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card 1: Metro 2 Format Failure -->
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col justify-between shadow-md hover:bg-surface-container transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm uppercase font-mono">
+                15 U.S.C. § 1681eb(b)
+              </span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">description</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Metro 2 Format Failure &amp; Maximum Accuracy Demand
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Forces bureaus to produce the exact 24-character Base Segment payload. Pinpoints discrepancies in Date of First Delinquency (DOFD), account type codes, and payment history profiles.
+            </p>
+<div class="flex flex-col gap-1 pt-space-xs text-label-sm font-label-sm text-outline">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>Includes Metro 2 field discrepancy appendix</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>Statutory 30-day reinvestigation trigger</span>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">14 Pages w/ Exhibits</span>
+<button class="flex items-center gap-1 px-space-md py-2 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary hover:text-on-primary transition-all">
+<span>Generate Brief</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Furnisher Direct Liability -->
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col justify-between shadow-md hover:bg-surface-container transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-high text-secondary font-label-sm text-label-sm uppercase font-mono">
+                15 U.S.C. § 1681s-2
+              </span>
+<span class="material-symbols-outlined text-secondary text-[20px]">warning</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Furnisher Direct Liability &amp; Validation Notice
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Targets original creditors and debt collection agencies under Section 623. Demands wet-ink signatures, complete account ledger history, and chain-of-title assignments.
+            </p>
+<div class="flex flex-col gap-1 pt-space-xs text-label-sm font-label-sm text-outline">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>FDCPA Section 809 validation linkage</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>Civil penalty statutory warning clauses</span>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">8 Pages w/ Form 3811</span>
+<button class="flex items-center gap-1 px-space-md py-2 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary hover:text-on-primary transition-all">
+<span>Generate Brief</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Failure to Reinvestigate -->
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col justify-between shadow-md hover:bg-surface-container transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm uppercase font-mono">
+                15 U.S.C. § 1681i(a)(5)(A)
+              </span>
+<span class="material-symbols-outlined text-primary text-[20px]">gavel</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">
+              Failure to Reinvestigate &amp; Immediate Deletion Mandate
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              The Day 31 enforcement hammer. Formally demands that the consumer reporting agency immediately expunge unverified tradelines due to statutory expiration of the 30-day window.
+            </p>
+<div class="flex flex-col gap-1 pt-space-xs text-label-sm font-label-sm text-outline">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>Attaches postal proof-of-delivery timestamps</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-primary">check</span>
+<span>Triggers automated CFPB portal complaint</span>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">11 Pages w/ Audit Trail</span>
+<button class="flex items-center gap-1 px-space-md py-2 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary hover:text-on-primary transition-all">
+<span>Generate Brief</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript for Live Countdown & Micro-Interactions -->
+<script>
+    (function() {
+      // Live Countdown Timer
+      let totalSeconds = (12 * 86400) + (8 * 3600) + (44 * 60) + 12;
+      const timerElement = document.getElementById('statutory-timer');
+
+      if (timerElement) {
+        setInterval(() => {
+          if (totalSeconds <= 0) return;
+          totalSeconds--;
+          const days = Math.floor(totalSeconds / 86400);
+          const hours = Math.floor((totalSeconds % 86400) / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
+          timerElement.textContent = `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+        }, 1000);
+      }
+
+      // Sync USPS Button Rotation Feedback
+      const syncBtn = document.getElementById('btn-sync-usps');
+      const syncIcon = document.getElementById('sync-icon');
+      if (syncBtn && syncIcon) {
+        syncBtn.addEventListener('click', () => {
+          syncIcon.classList.add('animate-spin');
+          setTimeout(() => {
+            syncIcon.classList.remove('animate-spin');
+          }, 1200);
+        });
+      }
+
+      // Tab filter toggle state
+      const tabs = document.querySelectorAll('.tab-filter');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('bg-surface-container-high', 'text-on-surface');
+            t.classList.add('text-on-surface-variant');
+          });
+          tab.classList.add('bg-surface-container-high', 'text-on-surface');
+          tab.classList.remove('text-on-surface-variant');
+        });
+      });
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest text-on-surface-variant mt-space-xl"><div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-space-xl pb-space-xl"><div class="md:col-span-4 lg:col-span-5 flex flex-col gap-space-md"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[18px]">balance</span></div><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Credit Docket</span></div><p class="text-body-md font-body-md text-on-surface-variant max-w-md">High-precision statutory enforcement and FCRA consumer dispute orchestration. Engineered for rapid bureau audit trails, verification demands, and legal metric tracking.</p><div class="flex items-center gap-space-sm pt-space-xs"><div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="text-label-sm font-label-sm text-on-surface uppercase">All 3 Bureaus Online: Equifax, Experian, TransUnion</span></div></div></div><div class="md:col-span-2 lg:col-span-2 flex flex-col gap-space-sm"><span class="text-label-lg font-label-lg uppercase text-on-surface tracking-wider font-semibold">Platform</span><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="overview" href="#">Overview</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="bureau-sync" href="#">Bureau Sync</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="dispute-engine" href="#">Dispute Engine</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="letters-and-tracking" href="#">Letters &amp; Tracking</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="pricing" href="#">Pricing &amp; Plans</a></div><div class="md:col-span-2 lg:col-span-2 flex flex-col gap-space-sm"><span class="text-label-lg font-label-lg uppercase text-on-surface tracking-wider font-semibold">Statutory &amp; Acts</span><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">15 U.S.C. § 1681i (Reinvestigation)</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">15 U.S.C. § 1681eb (Accuracy)</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">FDCPA § 809 Validation</a><a class="text-body-md font-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Metro 2 Guidelines</a></div><div class="md:col-span-4 lg:col-span-3 flex flex-col gap-space-sm"><span class="text-label-lg font-label-lg uppercase text-on-surface tracking-wider font-semibold">Institutional Security</span><div class="flex flex-col gap-space-xs text-body-md font-body-md text-on-surface-variant"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">verified_user</span><span>256-Bit TLS Vault Encryption</span></div><div class="flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-[18px]">policy</span><span>FCRA Compliant Workflows</span></div><div class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-[18px]">encrypted</span><span>SOC2 Type II Certified Pipeline</span></div></div></div></div><div class="pt-space-lg flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-md"><p class="text-label-sm font-label-sm text-outline max-w-3xl leading-relaxed">Disclaimer: Credit Docket is a specialized software workbench and dispute automation suite designed to facilitate consumer rights administration under the Fair Credit Reporting Act (15 U.S.C. § 1681 et seq.). Credit Docket is not a law firm or a credit repair organization as defined by CROA. We do not provide formal legal counsel or guarantee specific score outcomes.</p><div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant shrink-0"><span>© 2025 Credit Docket Inc.</span><a class="hover:text-on-surface transition-colors" href="#">Privacy Policy</a><a class="hover:text-on-surface transition-colors" href="#">Terms of Service</a></div></div></div></footer></body></html>
